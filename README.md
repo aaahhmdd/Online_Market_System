@@ -35,10 +35,18 @@ Refreshing Information
 
 
 Instructions:
+
 1-sign up with username and password(min 6 words)
+
 2-login with the username and password
+
 3-you can withdraw or deposit any positive values
+
 4-you can sell product by enter the name and price
+
 5-you can buy the product by search it’s name and enter its id and buy
+
 6-you can see your info by click on refresh info (balance-items transactions)
+
 7-you can click on load report to load your transactions
+
