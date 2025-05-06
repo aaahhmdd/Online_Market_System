@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Distributed Market System - Dashboard</title>
+  <style>
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:#f7f9fc; color:#333; max-width: 900px; margin: 0 auto; padding: 20px;}
+    header { display:flex; justify-content: space-between; align-items: center; margin-bottom: 10px;}
+    h1 { margin: 0; color: #007bff; font-weight: normal;}
+    #balance { font-size: 1.1rem; font-weight: bold; margin-top: 5px; color: #444; }
+    .button-group {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    button.small-button {
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 5px 10px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+    }
+    button.small-button:hover {
+      background: #0056b3;
+    }
+    button.logout.small-button {
+      background: #dc3545;
+      height: 28px;
+    }
+    button.logout.small-button:hover {
+      background: #b52a37;
+    }
+    section { background:white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); padding: 20px; margin-bottom:20px; }
+    h2 { margin-top: 0; color:#0056b3; }
+    label { font-weight:bold; margin-top:10px; display:block; }
+    input, button { width: 100%; padding: 10px; margin-top: 8px; border-radius: 5px; border:1px solid #ccc; font-size:1rem; }
+    button.primary { background:#007bff; color:#fff; border:none; cursor:pointer; }
+    button.primary:hover { background:#0056b3; }
+    ul { list-style:none; padding-left: 0; max-height:150px; overflow-y:auto; border:1px solid #ccc; border-radius:5px; background:#fafafa; }
+    li { padding: 5px 10px; border-bottom: 1px solid #e1e4e8; }
+    li:last-child { border-bottom: none; }
+    .flex-row { display:flex; gap: 15px; flex-wrap: wrap; }
+    .flex-item { flex: 1 1 200px; }
+    .message { margin:10px 0; font-weight:bold; }
+    @media (max-width: 600px) {
+      .flex-row { flex-direction: column;}
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Welcome, {{ username }}</h1>
+    <div id="balance">Your balance is: $<span id="user_balance">0.00</span></div>
+  </div>
+  <div class="button-group">
+    <button id="refreshBtn" class="small-button" onclick="loadAccountInfo()" title="Refresh Info">&#x21bb; Refresh</button>
+    <button class="logout small-button" onclick="logout()">Log Out</button>
+  </div>
+</header>
+
+<section aria-label="Account balance management">
+  <h2>Account Balance</h2>
+  <div id="balance-message" class="message"></div>
+  <div class="flex-row">
+    <div class="flex-item">
+      <label for="deposit_amount">Deposit Amount</label>
+      <input type="number" min="0.01" step="0.01" id="deposit_amount" placeholder="Enter amount to deposit" />
+      <button class="primary" onclick="deposit()">Deposit</button>
+    </div>
+    <div class="flex-item">
+      <label for="withdraw_amount">Withdraw Amount</label>
+      <input type="number" min="0.01" step="0.01" id="withdraw_amount" placeholder="Enter amount to withdraw" />
+      <button class="primary" onclick="withdraw()">Withdraw</button>
+    </div>
+  </div>
+</section>
+
+<section aria-label="Add item for sale">
+  <h2>Add Item for Sale</h2>
+  <label for="item_name">Item Name</label>
+  <input type="text" id="item_name" placeholder="Enter item name" />
+  <label for="item_price">Item Price</label>
+  <input type="number" min="0.01" step="0.01" id="item_price" placeholder="Enter price" />
+  <button class="primary" onclick="addItem()">Add Item</button>
+</section>
+
+<section aria-label="Items For Sale & Search" style="margin-top: 30px;">
+  <h2>Items For Sale</h2>
+  <label for="search_query">Search Items</label>
+  <input type="text" id="search_query" placeholder="Search items by name" oninput="filterItems()" />
+  <ul id="items_for_sale"></ul>
+</section>
+
+<section aria-label="Purchase item" style="margin-top: 20px;">
+  <h2>Purchase Item</h2>
+  <label for="purchase_item_id">Enter Item ID to Purchase</label>
+  <input type="number" min="1" id="purchase_item_id" placeholder="Item ID" />
+  <button class="primary" onclick="purchaseItem()">Purchase Item</button>
+  <div id="purchase-message" class="message"></div>
+</section>
+
+<section aria-label="Account Information" style="margin-top: 20px;">
+  <h2>Your Account Info</h2>
+  <button class="primary" onclick="loadAccountInfo()">Refresh Info</button>
+  <div id="account_info"></div>
+</section>
+
+<section aria-label="Transaction Reports" style="margin-top: 20px;">
+  <h2>Transaction Reports</h2>
+  <button class="primary" onclick="loadReports()">Load Transaction Reports</button>
+  <ul id="transaction_reports"></ul>
+</section>
+
+<div id="general-message" class="message"></div>
+
+<script>
+let allItems = [];
+let userId = {{ session.get('user_id', 0) }};
+
+function logout() {
+  window.location.href = '/logout';
+}
+
+function showMessage(id, msg, color='green') {
+  const el = document.getElementById(id);
+  el.style.color = color;
+  el.textContent = msg;
+}
+
+function clearMessage(id) {
+  const el = document.getElementById(id);
+  el.textContent = '';
+}
+
+function deposit() {
+  clearMessage('balance-message');
+  const amount = Number(document.getElementById('deposit_amount').value);
+  if (!amount || amount <= 0) {
+    showMessage('balance-message', 'Enter valid deposit amount', 'red');
+    return;
+  }
+  fetch('/api/deposit', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({user_id: userId, amount})
+  }).then(r => r.json())
+    .then(data => {
+      if (data.error) showMessage('balance-message', data.error, 'red');
+      else {
+        showMessage('balance-message', data.message, 'green');
+        document.getElementById('deposit_amount').value = '';
+        loadAccountInfo();
+      }
+    }).catch(() => showMessage('balance-message', 'Deposit failed', 'red'));
+}
+
+function withdraw() {
+  clearMessage('balance-message');
+  const amount = Number(document.getElementById('withdraw_amount').value);
+  if (!amount || amount <= 0) {
+    showMessage('balance-message', 'Enter valid withdraw amount', 'red');
+    return;
+  }
+  fetch('/api/withdraw', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({user_id: userId, amount})
+  }).then(r => r.json())
+    .then(data => {
+      if (data.error) showMessage('balance-message', data.error, 'red');
+      else {
+        showMessage('balance-message', data.message, 'green');
+        document.getElementById('withdraw_amount').value = '';
+        loadAccountInfo();
+      }
+    }).catch(() => showMessage('balance-message', 'Withdraw failed', 'red'));
+}
+
+function addItem() {
+  clearMessage('general-message');
+  const name = document.getElementById('item_name').value.trim();
+  const price = Number(document.getElementById('item_price').value);
+  if (!name || !price || price <= 0) {
+    showMessage('general-message', 'Enter valid item name and price', 'red');
+    return;
+  }
+  fetch('/api/items', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({owner_id: userId, name, price})
+  }).then(r => r.json())
+    .then(data => {
+      if (data.error) showMessage('general-message', data.error, 'red');
+      else {
+        showMessage('general-message', data.message, 'green');
+        document.getElementById('item_name').value = '';
+        document.getElementById('item_price').value = '';
+        loadAllItemsForSale();
+        loadAccountInfo();
+      }
+    }).catch(() => showMessage('general-message', 'Add item failed', 'red'));
+}
+
+function loadAllItemsForSale() {
+  // Get all items for sale from all users
+  fetch('/api/search?query=')
+  .then(r => r.json())
+  .then(data => {
+    if (data.error) {
+      showMessage('general-message', data.error, 'red');
+      return;
+    }
+    allItems = data.items || [];
+    renderItems(allItems);
+  })
+  .catch(() => showMessage('general-message', 'Failed to load items.', 'red'));
+}
+
+function renderItems(items) {
+  const list = document.getElementById('items_for_sale');
+  list.innerHTML = '';
+  if (!items.length) {
+    list.innerHTML = '<li>No items for sale</li>';
+    return;
+  }
+  for (const item of items) {
+    const li = document.createElement('li');
+    li.textContent = `ID: ${item.item_id} | ${item.name} - $${item.price.toFixed(2)}`;
+    list.appendChild(li);
+  }
+}
+
+function filterItems() {
+  const query = document.getElementById('search_query').value.toLowerCase();
+  if (!query) {
+    renderItems(allItems);
+    return;
+  }
+  const filtered = allItems.filter(it => it.name.toLowerCase().includes(query));
+  renderItems(filtered);
+}
+
+function purchaseItem() {
+  clearMessage('purchase-message');
+  const item_id = Number(document.getElementById('purchase_item_id').value);
+  if (!item_id) {
+    showMessage('purchase-message', 'Enter valid item ID', 'red');
+    return;
+  }
+  fetch('/api/purchase', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({buyer_id: userId, item_id})
+  }).then(r => r.json())
+    .then(data => {
+      if(data.error) showMessage('purchase-message', data.error, 'red');
+      else {
+        showMessage('purchase-message', data.message, 'green');
+        document.getElementById('purchase_item_id').value = '';
+        loadAllItemsForSale();
+        loadAccountInfo();
+        filterItems();
+        loadReports();
+      }
+    }).catch(() => showMessage('purchase-message', 'Purchase failed', 'red'));
+}
+
+function loadAccountInfo() {
+  fetch('/api/account?user_id=' + userId)
+  .then(r => r.json())
+  .then(data => {
+    const div = document.getElementById('account_info');
+    if(data.error){
+      div.textContent = data.error;
+      document.getElementById('user_balance').textContent = '0.00';
+      return;
+    }
+    document.getElementById('user_balance').textContent = parseFloat(data.balance).toFixed(2);
+
+    let html = `<p><strong>Balance:</strong> $${parseFloat(data.balance).toFixed(2)}</p>`;
+    html += '<p><strong>Purchased Items:</strong></p><ul>';
+    if(data.purchased_items.length === 0) html += '<li>None</li>';
+    else {
+      data.purchased_items.forEach(item => {
+        html += `<li>${item.name} (Price: $${parseFloat(item.price).toFixed(2)}, Seller: ${item.seller})</li>`;
+      });
+    }
+    html += '</ul><p><strong>Sold Items:</strong></p><ul>';
+    if(data.sold_items.length === 0) html += '<li>None</li>';
+    else {
+      data.sold_items.forEach(item => {
+        html += `<li>${item.name} (Price: $${parseFloat(item.price).toFixed(2)}, Buyer: ${item.buyer})</li>`;
+      });
+    }
+    html += '</ul>';
+    div.innerHTML = html;
+  })
+  .catch(err => {
+    document.getElementById('account_info').textContent = 'Failed to load account info';
+    document.getElementById('user_balance').textContent = '0.00';
+    console.error('Error loading account info:', err);
+  });
+}
+
+function loadReports() {
+  fetch('/api/report?user_id=' + userId)
+  .then(r => r.json())
+  .then(data => {
+    const list = document.getElementById('transaction_reports');
+    list.innerHTML = '';
+    if(data.error) {
+      list.innerHTML = `<li>${data.error}</li>`;
+      return;
+    }
+    if(data.transactions.length === 0) {
+      list.innerHTML = '<li>No transactions found</li>';
+      return;
+    }
+    data.transactions.forEach(txn => {
+      const li = document.createElement('li');
+      li.textContent = `Transaction ID: ${txn.transaction_id} | Item: ${txn.item_name} | Price: $${parseFloat(txn.price).toFixed(2)} | Buyer: ${txn.buyer} | Seller: ${txn.seller}`;
+      list.appendChild(li);
+    });
+  });
+}
+
+window.onload = function(){
+  loadAllItemsForSale();
+  loadAccountInfo();
+  loadReports();
+};
+</script>
+
+</body>
+</html>

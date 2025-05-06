@@ -1,0 +1,75 @@
+('E:\\Senior-1\\Spring '
+ '25\\DS\\Project\\PythonProject2\\build\\desktop_app\\desktop_app.pkg',
+ {'BINARY': True,
+  'DATA': True,
+  'EXECUTABLE': True,
+  'EXTENSION': True,
+  'PYMODULE': True,
+  'PYSOURCE': True,
+  'PYZ': False,
+  'SPLASH': True,
+  'SYMLINK': False},
+ [('pyi-contents-directory _internal', '', 'OPTION'),
+  ('PYZ-00.pyz',
+   'E:\\Senior-1\\Spring '
+   '25\\DS\\Project\\PythonProject2\\build\\desktop_app\\PYZ-00.pyz',
+   'PYZ'),
+  ('struct',
+   'E:\\Senior-1\\Spring '
+   '25\\DS\\Project\\PythonProject2\\build\\desktop_app\\localpycs\\struct.pyc',
+   'PYMODULE'),
+  ('pyimod01_archive',
+   'E:\\Senior-1\\Spring '
+   '25\\DS\\Project\\PythonProject2\\build\\desktop_app\\localpycs\\pyimod01_archive.pyc',
+   'PYMODULE'),
+  ('pyimod02_importers',
+   'E:\\Senior-1\\Spring '
+   '25\\DS\\Project\\PythonProject2\\build\\desktop_app\\localpycs\\pyimod02_importers.pyc',
+   'PYMODULE'),
+  ('pyimod03_ctypes',
+   'E:\\Senior-1\\Spring '
+   '25\\DS\\Project\\PythonProject2\\build\\desktop_app\\localpycs\\pyimod03_ctypes.pyc',
+   'PYMODULE'),
+  ('pyimod04_pywin32',
+   'E:\\Senior-1\\Spring '
+   '25\\DS\\Project\\PythonProject2\\build\\desktop_app\\localpycs\\pyimod04_pywin32.pyc',
+   'PYMODULE'),
+  ('pyiboot01_bootstrap',
+   'E:\\Senior-1\\Spring '
+   '25\\DS\\Project\\PythonProject2\\.venv\\Lib\\site-packages\\PyInstaller\\loader\\pyiboot01_bootstrap.py',
+   'PYSOURCE'),
+  ('pyi_rth_pkgutil',
+   'E:\\Senior-1\\Spring '
+   '25\\DS\\Project\\PythonProject2\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks\\pyi_rth_pkgutil.py',
+   'PYSOURCE'),
+  ('pyi_rth_multiprocessing',
+   'E:\\Senior-1\\Spring '
+   '25\\DS\\Project\\PythonProject2\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks\\pyi_rth_multiprocessing.py',
+   'PYSOURCE'),
+  ('pyi_rth_inspect',
+   'E:\\Senior-1\\Spring '
+   '25\\DS\\Project\\PythonProject2\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks\\pyi_rth_inspect.py',
+   'PYSOURCE'),
+  ('pyi_rth_setuptools',
+   'E:\\Senior-1\\Spring '
+   '25\\DS\\Project\\PythonProject2\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks\\pyi_rth_setuptools.py',
+   'PYSOURCE'),
+  ('pyi_rth_pkgres',
+   'E:\\Senior-1\\Spring '
+   '25\\DS\\Project\\PythonProject2\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks\\pyi_rth_pkgres.py',
+   'PYSOURCE'),
+  ('pyi_rth__tkinter',
+   'E:\\Senior-1\\Spring '
+   '25\\DS\\Project\\PythonProject2\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks\\pyi_rth__tkinter.py',
+   'PYSOURCE'),
+  ('desktop_app',
+   'E:\\Senior-1\\Spring 25\\DS\\Project\\PythonProject2\\desktop_app.py',
+   'PYSOURCE')],
+ 'python313.dll',
+ True,
+ False,
+ False,
+ [],
+ None,
+ None,
+ None)

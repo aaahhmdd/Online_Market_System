@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Distributed Market System - Login/Register</title>
+<style>
+  body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:#f0f2f5; display:flex; justify-content:center; align-items:center; height:100vh; margin:0;}
+  #auth-container { background: white; padding: 30px; border-radius:8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 320px; }
+  h2 { text-align:center; color:#007bff; }
+  input { width: 100%; padding: 10px; margin-top: 10px; margin-bottom: 15px; border-radius: 5px; border: 1px solid #ccc; font-size:1rem; }
+  button { width: 100%; padding: 10px; background-color:#007bff; border:none; border-radius:5px; color:white; font-weight:bold; cursor:pointer; font-size:1rem; }
+  button:hover { background-color:#0056b3; }
+  #message { text-align:center; margin: 10px 0; color:red; font-weight:bold; }
+</style>
+</head>
+<body>
+<div id="auth-container">
+  <h2>Login</h2>
+  <input type="text" id="login_username" placeholder="Username" autocomplete="username" />
+  <input type="password" id="login_password" placeholder="Password" autocomplete="current-password" />
+  <button onclick="doLogin()">Login</button>
+  <h2>Or Register</h2>
+  <input type="text" id="reg_username" placeholder="Username" autocomplete="username" />
+  <input type="password" id="reg_password" placeholder="Password" autocomplete="new-password" />
+  <button onclick="doRegister()">Register</button>
+  <div id="message"></div>
+</div>
+<script>
+function showMsg(msg, color='red') {
+  const el = document.getElementById('message');
+  el.style.color = color;
+  el.textContent = msg;
+}
+function doLogin() {
+  showMsg('');
+  const username = document.getElementById('login_username').value.trim();
+  const password = document.getElementById('login_password').value;
+  if (!username || !password) {
+    showMsg('Enter username and password');
+    return;
+  }
+  fetch('/api/login', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({username, password})
+  }).then(r => r.json()).then(data => {
+    if (data.error) showMsg(data.error);
+    else {
+      showMsg('Login successful', 'green');
+      window.location.href = '/dashboard';
+    }
+  }).catch(() => showMsg('Login failed'));
+}
+function doRegister() {
+  showMsg('');
+  const username = document.getElementById('reg_username').value.trim();
+  const password = document.getElementById('reg_password').value;
+  if (!username || !password) {
+    showMsg('Enter username and password');
+    return;
+  }
+  fetch('/api/register', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({username, password})
+  }).then(r => r.json()).then(data => {
+    if (data.error) showMsg(data.error);
+    else showMsg('Registration successful, please login', 'green');
+  }).catch(() => showMsg('Registration failed'));
+}
+</script>
+</body>
+</html>
