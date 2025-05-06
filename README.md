@@ -1,4 +1,4 @@
-# Online_Market_System
+# Online_Market_System Desktop_App
 User Guide for Distributed Market System
 Welcome to the Distributed Market System! This guide will help you navigate the application and utilize its features effectively.
 Logging In and Out
