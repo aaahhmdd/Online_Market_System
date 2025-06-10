@@ -1,47 +1,46 @@
-Online Market System Desktop App
-A distributed market system desktop application built with Python, designed to facilitate buying, selling, and managing transactions in a user-friendly environment.
-Table of Contents
+# **Online Market System Desktop App**  
+*A distributed market system desktop application built with Python, designed to facilitate buying, selling, and managing transactions in a user-friendly environment.*
 
-Overview
-Features
-Installation
-User Guide
+---
 
-Logging In and Out
-Viewing Your Balance
-Depositing and Withdrawing Funds
-Adding Items for Sale
-Viewing All Items for Sale
-Searching for Items
-Purchasing Items
-Viewing Your Account Information
-Viewing Transaction Reports
-Refreshing Information
+## **Table of Contents**  
+1. [Overview](#overview)  
+2. [Features](#features)  
+3. [Installation](#installation)  
+4. [User Guide](#user-guide)  
+5. [Instructions](#instructions)  
+6. [Contributing](#contributing)  
+7. [License](#license)  
 
+---
 
-Instructions
-Contributing
-License
+## **Overview**  
+The **Online Market System Desktop App** is a Python-based application that enables users to participate in a distributed marketplace. Users can:  
+- Sign up / log in  
+- Manage funds  
+- List items for sale  
+- Purchase items  
+- Review transaction history  
 
-Overview
-The Online Market System Desktop App is a Python-based application that enables users to participate in a distributed marketplace. Users can sign up, log in, manage their funds, list items for sale, purchase items, and review their transaction history.
-Features
+---
 
-User authentication (sign-up and login).
-Balance management (deposit and withdraw funds).
-Item listing and purchasing functionality.
-Real-time item search and display.
-Account and transaction history overview.
-Data refresh capabilities for up-to-date information.
+## **Features**  
+✔ **User authentication** (sign-up and login)  
+✔ **Balance management** (deposit and withdraw funds)  
+✔ **Item listing and purchasing**  
+✔ **Real-time item search**  
+✔ **Transaction history overview**  
+✔ **Data refresh** for up-to-date information  
 
-Installation
+---
 
-Prerequisites:
+## **Installation**  
 
-Python 3.6 or higher.
-Install required packages:
-bashCollapseWrapRunCopypip install -r requirements.txt
-
+### **Prerequisites**:  
+- Python 3.6+  
+- Required packages:  
+  ```bash
+  pip install -r requirements.txt
 Ensure you have a GUI library (e.g., tkinter is included with Python, or use PyQt if specified in requirements.txt).
 
 
